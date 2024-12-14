@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UOB Students by Nationality</title>
+    <style>
+        body {
+            background-color: #f0f0f5;
+            color: #333;
+            font-family: 'Verdana', sans-serif;
+            line-height: 1.6;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            color: #2c3e50;
+        }
+
+        header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+            width: 90%;
+            max-width: 90%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+            border-radius: 8px;
+        }
+
+        table th, table td {
+            text-align: center;
+            padding: 1rem;
+            border: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #3498db;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        table td {
+            font-size: 1rem;
+            color: #34495e;
+        }
+
+        table tbody tr:hover {
+            background-color: #ecf0f1;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1rem 1.5rem;
+            background-color: #3498db;
+            color: white;
+            font-size: 1rem;
+            border-radius: 5px;
+        }
+
+        footer a {
+            color: #ffd700;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive table */
+        @media (max-width: 768px) {
+            table {
+                font-size: 0.85rem;
+                width: 100%;
+                overflow-x: auto;
+            }
+        }
+
+        p.empty {
+            text-align: center;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>UOB Students by Nationality</h1>
+        <p>Data sourced from the Bahrain Open Data Portal.</p>
+    </header>
+
+    <div id="content-container">
+        <script>
+            async function fetchData() {
+                const apiUrl = "https://data.gov.bh/api/explore/v2.1/catalog/datasets/01-statistics-of-students-nationalities_updated/records?where=colleges%20like%20%22IT%22%20AND%20the_programs%20like%20%22bachelor%22&limit=100";
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                const container = document.getElementById("content-container");
+                const table = document.createElement('table');
+                const thead = document.createElement('thead');
+                const headRow = document.createElement('tr');
+                const tableHeaders = ['Year', 'Semester', 'Program', 'Nationality', 'College', 'Number of Students'];
+
+                tableHeaders.forEach(header => {
+                    const th = document.createElement('th');
+                    th.textContent = header;
+                    headRow.appendChild(th);
+                });
+
+                thead.appendChild(headRow);
+                table.appendChild(thead);
+
+                const tbody = document.createElement('tbody');
+
+                for (let i = 0; i < data.results.length; i++) {
+                    const row = document.createElement('tr');
+                    const currentData = data.results[i];
+
+                    const tdYear = document.createElement('td');
+                    tdYear.textContent = currentData['year'];
+                    row.appendChild(tdYear);
+
+                    const tdSemester = document.createElement('td');
+                    tdSemester.textContent = currentData['semester'];
+                    row.appendChild(tdSemester);
+
+                    const tdProgram = document.createElement('td');
+                    tdProgram.textContent = currentData['the_programs'];
+                    row.appendChild(tdProgram);
+
+                    const tdNationality = document.createElement('td');
+                    tdNationality.textContent = currentData['nationality'];
+                    row.appendChild(tdNationality);
+
+                    const tdColleges = document.createElement('td');
+                    tdColleges.textContent = currentData['colleges'];
+                    row.appendChild(tdColleges);
+
+                    const tdNumberOfStudents = document.createElement('td');
+                    tdNumberOfStudents.textContent = currentData['number_of_students'];
+                    row.appendChild(tdNumberOfStudents);
+
+                    tbody.appendChild(row);
+                }
+
+                table.appendChild(tbody);
+                container.appendChild(table);
+            }
+
+            fetchData();
+        </script>
+    </div>
+
+    <footer>
+        <p>Data provided by the <a href="https://data.gov.bh">Bahrain Open Data Portal</a> | UOB Student Enrollment</p>
+    </footer>
+</body>
+</html>
